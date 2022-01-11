@@ -6,8 +6,8 @@ class BoardController {
 
   BoardController(this.rows, this.columns);
 
-  List<List<Cell>> boardData = [];
-  List<List<Cell>> backupBoardData = [];
+  List<List<Cell>> boardData = [[]];
+  List<List<Cell>> backupBoardData = [[]];
 
   void createBackup() {
     backupBoardData = boardData;
@@ -15,8 +15,9 @@ class BoardController {
 
   void init() {
     for (int x = 0; x < rows; x++) {
+      boardData.add([]);
       for (int y = 0; y < columns; y++) {
-        boardData[x][y] = Cell(x, y);
+        boardData[x].add(Cell(x, y));
       }
     }
   }
