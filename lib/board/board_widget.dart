@@ -15,17 +15,28 @@ class BoardWidget extends StatelessWidget {
     controller.init();
 
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: List.generate(
-        columns,
-        (col) => Row(
+      children: [
+        Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: List.generate(
-            rows,
-            (row) => CellWidget(cell: controller.boardData[col][row]),
+            columns,
+            (col) => Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(
+                rows,
+                (row) => CellWidget(cell: controller.boardData[col][row]),
+              ),
+            ),
           ),
         ),
-      ),
+        SizedBox(
+          height: 16,
+        ),
+        ElevatedButton(
+          onPressed: controller.testFunc,
+          child: Text("Run Cycle"),
+        )
+      ],
     );
   }
 }

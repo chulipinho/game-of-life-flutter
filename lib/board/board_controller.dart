@@ -7,10 +7,15 @@ class BoardController {
   BoardController(this.rows, this.columns);
 
   List<List<Cell>> boardData = [[]];
-  List<List<Cell>> backupBoardData = [[]];
+  List<List<bool>> newBoardState = [[]];
 
-  void createBackup() {
-    backupBoardData = boardData;
+  void createStateBackup() {
+    for (int x = 0; x < rows; x++) {
+      newBoardState.add([]);
+      for (int y = 0; y < columns; y++) {
+        newBoardState[x].add(boardData[x][y].isAlive);
+      }
+    }
   }
 
   void init() {
@@ -24,9 +29,9 @@ class BoardController {
 
   bool isOutOfRange(int x, int y) {
     if (x > 0 && x < rows && y > 0 && y < columns) {
-      return true;
-    } else {
       return false;
+    } else {
+      return true;
     }
   }
 
@@ -38,34 +43,48 @@ class BoardController {
         int row = x + cell.row;
         int col = y + cell.col;
 
-        if (backupBoardData[row][col].isAlive && !isOutOfRange(row, col)) {
-          aliveNeighbours++;
+        if (!isOutOfRange(row, col)) {
+          if (newBoardState[row][col]) {
+            aliveNeighbours++;
+          }
         }
       }
     }
     return aliveNeighbours;
   }
 
-  void manageCellState(int neighbors, Cell cell) {
+  bool manageBackupState(int neighbors) {
     if (neighbors > 3 || neighbors < 2) {
-      if (cell.isAlive) {
-        cell.die();
-      }
-      return;
+      return false;
     }
-    if (!cell.isAlive) {
-      cell.live();
+    return true;
+  }
+
+  void manageCellState() {
+    for (List<Cell> cells in boardData) {
+      for (Cell cell in cells) {
+        if (newBoardState[cell.row][cell.col] && !cell.isAlive) {
+          cell.live();
+        } else if (!newBoardState[cell.row][cell.col] && cell.isAlive) {
+          cell.die();
+        }
+      }
     }
   }
 
   void runCycle() {
-    createBackup();
+    createStateBackup();
     for (List<Cell> cells in boardData) {
       for (Cell cell in cells) {
         int neighborsAlive = aliveNeighbors(cell);
 
-        manageCellState(neighborsAlive, cell);
+        newBoardState[cell.row][cell.col] = manageBackupState(neighborsAlive);
       }
     }
+    manageCellState();
+  }
+
+  void testFunc() {
+    runCycle();
   }
 }
