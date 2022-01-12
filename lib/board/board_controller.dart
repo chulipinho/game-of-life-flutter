@@ -10,6 +10,7 @@ class BoardController {
   List<List<bool>> newBoardState = [[]];
 
   void createStateBackup() {
+    newBoardState = [[]];
     for (int x = 0; x < rows; x++) {
       newBoardState.add([]);
       for (int y = 0; y < columns; y++) {
@@ -27,8 +28,8 @@ class BoardController {
     }
   }
 
-  bool isOutOfRange(int x, int y) {
-    if (x > 0 && x < rows && y > 0 && y < columns) {
+  bool _isIndexOutOfRange(int x, int y) {
+    if (x >= 0 && x < rows && y >= 0 && y < columns) {
       return false;
     } else {
       return true;
@@ -43,8 +44,13 @@ class BoardController {
         int row = x + cell.row;
         int col = y + cell.col;
 
-        if (!isOutOfRange(row, col)) {
-          if (newBoardState[row][col]) {
+        //Checks if cell is not itself
+        if (x == 0 && y == 0) {
+          continue;
+        }
+
+        if (!_isIndexOutOfRange(row, col)) {
+          if (boardData[row][col].isAlive) {
             aliveNeighbours++;
           }
         }
@@ -53,11 +59,16 @@ class BoardController {
     return aliveNeighbours;
   }
 
-  bool manageBackupState(int neighbors) {
+  bool? manageBackupState(int neighbors) {
     if (neighbors > 3 || neighbors < 2) {
       return false;
     }
-    return true;
+    if (neighbors == 3) {
+      return true;
+    }
+    if (neighbors == 2) {
+      return null;
+    }
   }
 
   void manageCellState() {
@@ -78,7 +89,8 @@ class BoardController {
       for (Cell cell in cells) {
         int neighborsAlive = aliveNeighbors(cell);
 
-        newBoardState[cell.row][cell.col] = manageBackupState(neighborsAlive);
+        newBoardState[cell.row][cell.col] = manageBackupState(neighborsAlive) ??
+            newBoardState[cell.row][cell.col];
       }
     }
     manageCellState();
