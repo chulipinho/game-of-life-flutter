@@ -5,7 +5,7 @@ import 'package:game_of_life/cell/cell.dart';
 class BoardController {
   final int rows;
   final int columns;
-  late Timer timer;
+  late Timer _timer;
 
   BoardController(this.rows, this.columns);
 
@@ -98,13 +98,18 @@ class BoardController {
   }
 
   void runCycles() {
-    timer = Timer.periodic(Duration(milliseconds: 50), (timer) {
+    _timer = Timer.periodic(Duration(milliseconds: 100), (timer) {
       runCycle();
     });
   }
 
+  void stopCycles() {
+    _timer.cancel();
+  }
+
   void clearBoard() {
     _makeAllCells("die");
+    stopCycles();
   }
 
   void _makeAllCells(command) {

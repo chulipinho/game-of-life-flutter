@@ -33,10 +33,10 @@ class _CellWidgetState extends State<CellWidget> {
               height: 20,
               width: 20,
               decoration: BoxDecoration(
-                border: Border.all(color: AppColors.border),
+                border: Border.all(color: Colors.grey),
                 color: widget.cell.isAlive
-                    ? AppColors.aliveCell
-                    : AppColors.deadCell,
+                    ? Theme.of(context).colorScheme.primary
+                    : Theme.of(context).scaffoldBackgroundColor,
               ),
             ),
           );

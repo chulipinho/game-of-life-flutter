@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:game_of_life/core/app_themes.dart';
 import 'package:game_of_life/main_screen/main_screen.dart';
 
 class MyApp extends StatelessWidget {
@@ -7,10 +8,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      title: 'Game of Life',
+      theme: AppThemes.lightTheme,
       home: const MainScreen(),
     );
   }
