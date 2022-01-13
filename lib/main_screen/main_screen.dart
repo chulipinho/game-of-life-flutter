@@ -7,7 +7,10 @@ class MainScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BoardWidget(rows: 20, columns: 20),
+      body: BoardWidget(
+        rows: 20,
+        columns: 20,
+      ),
     );
   }
 }

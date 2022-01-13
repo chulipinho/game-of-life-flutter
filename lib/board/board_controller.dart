@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:game_of_life/cell/cell.dart';
 
 class BoardController {
   final int rows;
   final int columns;
+  late Timer timer;
 
   BoardController(this.rows, this.columns);
 
@@ -71,47 +74,52 @@ class BoardController {
     }
   }
 
-  void _manageCellState() {
+  void _updateBoard() {
+    _makeAllCells((cell) {
+      if (newBoardState[cell.row][cell.col] && !cell.isAlive) {
+        cell.live();
+      } else if (!newBoardState[cell.row][cell.col] && cell.isAlive) {
+        cell.die();
+      }
+    });
+  }
+
+  void _manageCellState(Cell cell) {
+    int neighborsAlive = _aliveNeighbors(cell);
+
+    newBoardState[cell.row][cell.col] =
+        _manageBackupState(neighborsAlive) ?? newBoardState[cell.row][cell.col];
+  }
+
+  void runCycle() {
+    _createStateBackup();
+    _makeAllCells(_manageCellState);
+    _updateBoard();
+  }
+
+  void runCycles() {
+    timer = Timer.periodic(Duration(milliseconds: 50), (timer) {
+      runCycle();
+    });
+  }
+
+  void clearBoard() {
+    _makeAllCells("die");
+  }
+
+  void _makeAllCells(command) {
     for (List<Cell> cells in boardData) {
       for (Cell cell in cells) {
-        if (newBoardState[cell.row][cell.col] && !cell.isAlive) {
-          cell.live();
-        } else if (!newBoardState[cell.row][cell.col] && cell.isAlive) {
-          cell.die();
+        if (command is String) {
+          cell[command];
+        } else {
+          command(cell);
         }
       }
     }
   }
 
-  void runCycle() {
-    _createStateBackup();
-    for (List<Cell> cells in boardData) {
-      for (Cell cell in cells) {
-        int neighborsAlive = _aliveNeighbors(cell);
-
-        newBoardState[cell.row][cell.col] =
-            _manageBackupState(neighborsAlive) ??
-                newBoardState[cell.row][cell.col];
-      }
-    }
-    _manageCellState();
-  }
-
-  void runCycles() {}
-
-  void clearBoard() {
-    for (List<Cell> cells in boardData) {
-      for (Cell cell in cells) {
-        cell.die();
-      }
-    }
-  }
-
   void randomize() {
-    for (List<Cell> cells in boardData) {
-      for (Cell cell in cells) {
-        cell.randomizeState();
-      }
-    }
+    _makeAllCells("randomize");
   }
 }

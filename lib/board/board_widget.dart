@@ -32,9 +32,26 @@ class BoardWidget extends StatelessWidget {
         SizedBox(
           height: 16,
         ),
-        ElevatedButton(
-          onPressed: controller.testFunc,
-          child: Text("Run Cycle"),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            ElevatedButton(
+              onPressed: controller.runCycle,
+              child: Text("Run Cycle"),
+            ),
+            ElevatedButton(
+              onPressed: controller.randomize,
+              child: Text("Randomize"),
+            ),
+            ElevatedButton(
+              onPressed: controller.clearBoard,
+              child: Text("Clear"),
+            ),
+            ElevatedButton(
+              onPressed: () {},
+              child: Text("Play Cycle"),
+            ),
+          ],
         )
       ],
     );
