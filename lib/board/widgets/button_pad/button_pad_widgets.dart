@@ -18,28 +18,28 @@ class ButtonPadWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             DefaultButtonWidget(
-              onTap: () {},
+              onTap: controller.undo,
               child: Icon(
                 Icons.keyboard_arrow_left_rounded,
                 size: iconSize,
               ),
             ),
             DefaultButtonWidget(
-              onTap: () {},
+              onTap: controller.clearBoard,
               child: Icon(
                 Icons.close_rounded,
                 size: iconSize,
               ),
             ),
             DefaultButtonWidget(
-              onTap: () {},
+              onTap: controller.runCycles,
               child: Icon(
                 Icons.play_arrow_rounded,
                 size: iconSize,
               ),
             ),
             DefaultButtonWidget(
-              onTap: () {},
+              onTap: controller.runCycle,
               child: Icon(
                 Icons.keyboard_arrow_right_rounded,
                 size: iconSize,

@@ -1,25 +1,30 @@
 import 'dart:async';
 
+import 'package:game_of_life/board/utils/history_manager.dart';
 import 'package:game_of_life/cell/cell.dart';
 
 class BoardController {
   final int rows;
   final int columns;
   late Timer _timer;
+  final history = HistoryManager(maxUndos: 50);
 
   BoardController(this.rows, this.columns);
 
-  List<List<Cell>> boardData = [[]];
-  List<List<bool>> newBoardState = [[]];
+  bool get isHistoryEmpty => history.boardHistory.isEmpty;
+
+  List<List<Cell>> boardData = [];
+  List<List<bool>> newBoardState = [];
 
   void _createStateBackup() {
-    newBoardState = [[]];
+    newBoardState = [];
     for (int x = 0; x < rows; x++) {
       newBoardState.add([]);
       for (int y = 0; y < columns; y++) {
         newBoardState[x].add(boardData[x][y].isAlive);
       }
     }
+    history.addToHistory(newBoardState);
   }
 
   void init() {
@@ -104,7 +109,11 @@ class BoardController {
   }
 
   void stopCycles() {
-    _timer.cancel();
+    try {
+      _timer.cancel();
+    } catch (_) {
+      return;
+    }
   }
 
   void clearBoard() {
@@ -126,5 +135,14 @@ class BoardController {
 
   void randomize() {
     _makeAllCells("randomize");
+  }
+
+  void undo() {
+    final previousBoardState = history.pop();
+
+    _makeAllCells((Cell cell) {
+      boardData[cell.row][cell.col].state.value =
+          previousBoardState[cell.row][cell.col];
+    });
   }
 }
