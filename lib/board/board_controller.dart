@@ -109,15 +109,14 @@ class BoardController {
   }
 
   void stopCycles() {
-    try {
+    if (_timer.isActive) {
       _timer.cancel();
-    } catch (_) {
-      return;
     }
   }
 
   void clearBoard() {
     _makeAllCells("die");
+    history.clearHistory();
     stopCycles();
   }
 
@@ -135,6 +134,7 @@ class BoardController {
 
   void randomize() {
     _makeAllCells("randomize");
+    _createStateBackup();
   }
 
   void undo() {

@@ -17,11 +17,15 @@ class ButtonPadWidget extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            DefaultButtonWidget(
-              onTap: controller.undo,
-              child: Icon(
-                Icons.keyboard_arrow_left_rounded,
-                size: iconSize,
+            ValueListenableBuilder<bool>(
+              valueListenable: controller.history.empty,
+              builder: (context, value, _) => DefaultButtonWidget(
+                isDisabled: value,
+                onTap: controller.undo,
+                child: Icon(
+                  Icons.keyboard_arrow_left_rounded,
+                  size: iconSize,
+                ),
               ),
             ),
             DefaultButtonWidget(

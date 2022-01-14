@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class DefaultButtonWidget extends StatelessWidget {
+  final bool isDisabled;
   final VoidCallback onTap;
   final Widget child;
   final double? height;
@@ -12,7 +13,8 @@ class DefaultButtonWidget extends StatelessWidget {
       required this.child,
       this.backgroundColor,
       this.height,
-      this.width})
+      this.width,
+      this.isDisabled = false})
       : super(key: key);
 
   @override
@@ -21,12 +23,13 @@ class DefaultButtonWidget extends StatelessWidget {
         backgroundColor ?? Theme.of(context).colorScheme.primary;
 
     return GestureDetector(
-      onTap: onTap,
+      onTap: isDisabled ? null : onTap,
       child: Container(
         height: height,
         width: width,
         decoration: BoxDecoration(
-            color: _backgroundColor, borderRadius: BorderRadius.circular(5)),
+            color: isDisabled ? Colors.yellow[800] : _backgroundColor,
+            borderRadius: BorderRadius.circular(5)),
         child: Center(child: child),
       ),
     );
