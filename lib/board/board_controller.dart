@@ -12,6 +12,14 @@ class BoardController {
   BoardController(this.rows, this.columns);
 
   bool get isHistoryEmpty => history.boardHistory.isEmpty;
+  bool get boardIsEmpty {
+    for (List<Cell> cells in boardData) {
+      for (Cell cell in cells) {
+        if (cell.isAlive) return false;
+      }
+    }
+    return true;
+  }
 
   List<List<Cell>> boardData = [];
   List<List<bool>> boardState = [];
@@ -116,6 +124,9 @@ class BoardController {
   }
 
   void runCycles() {
+    if (boardIsEmpty) return;
+    if (_timer.isActive) return;
+
     _timer = Timer.periodic(Duration(milliseconds: 100), (_) {
       runCycle();
     });
@@ -144,6 +155,7 @@ class BoardController {
   }
 
   void randomize() {
+    _timer.cancel();
     _makeAllCells("randomize");
     // _createStateBackup();
   }
