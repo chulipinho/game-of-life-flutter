@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:game_of_life/board/board_controller.dart';
 import 'package:game_of_life/shared/default_button_widget.dart';
-import 'package:game_of_life/shared/dynamic_button_widget.dart';
 
 class ButtonPadWidget extends StatelessWidget {
   final BoardController controller;
@@ -9,7 +8,7 @@ class ButtonPadWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double iconSize = 40;
+    const double iconSize = 40;
 
     return Column(children: [
       SizedBox(

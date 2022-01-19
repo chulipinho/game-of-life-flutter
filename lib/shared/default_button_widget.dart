@@ -28,7 +28,7 @@ class DefaultButtonWidget extends StatelessWidget {
         height: height,
         width: width,
         decoration: BoxDecoration(
-            color: isDisabled ? Colors.yellow[800] : _backgroundColor,
+            color: isDisabled ? Colors.grey : _backgroundColor,
             borderRadius: BorderRadius.circular(5)),
         child: Center(child: child),
       ),

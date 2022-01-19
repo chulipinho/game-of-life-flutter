@@ -8,8 +8,8 @@ class MainScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: BoardWidget(
-        rows: 5,
-        columns: 5,
+        rows: 20,
+        columns: 20,
       ),
     );
   }

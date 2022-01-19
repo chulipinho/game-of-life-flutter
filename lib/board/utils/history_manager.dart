@@ -8,6 +8,8 @@ class HistoryManager {
   HistoryManager({required this.maxUndos});
 
   bool get isEmpty => empty.value;
+  List<List<bool>>? get previousValue =>
+      boardHistory.isEmpty ? null : boardHistory.last;
 
   List<List<bool>> _unreferenceList(List<List<bool>> lists) {
     List<List<bool>> unreferencedList = [];

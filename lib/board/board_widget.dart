@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:game_of_life/board/board_controller.dart';
 import 'package:game_of_life/board/widgets/button_pad/button_pad_widgets.dart';
 import 'package:game_of_life/cell/cell_widget.dart';
-import 'package:game_of_life/shared/default_button_widget.dart';
-import 'package:game_of_life/shared/dynamic_button_widget.dart';
 
 class BoardWidget extends StatelessWidget {
   final int rows;

@@ -6,25 +6,39 @@ import 'package:game_of_life/cell/cell.dart';
 class BoardController {
   final int rows;
   final int columns;
-  late Timer _timer;
   final history = HistoryManager(maxUndos: 50);
+  Timer _timer = Timer(Duration.zero, () {});
 
   BoardController(this.rows, this.columns);
 
   bool get isHistoryEmpty => history.boardHistory.isEmpty;
 
   List<List<Cell>> boardData = [];
-  List<List<bool>> newBoardState = [];
+  List<List<bool>> boardState = [];
 
   void _createStateBackup() {
-    newBoardState = [];
+    bool isRepeating = true;
+    boardState = [];
+
     for (int x = 0; x < rows; x++) {
-      newBoardState.add([]);
+      boardState.add([]);
       for (int y = 0; y < columns; y++) {
-        newBoardState[x].add(boardData[x][y].isAlive);
+        boardState[x].add(boardData[x][y].isAlive);
+
+        if (history.previousValue == null) {
+          isRepeating = false;
+        } else if (boardState[x][y] != history.previousValue![x][y]) {
+          isRepeating = false;
+        }
       }
     }
-    history.addToHistory(newBoardState);
+
+    if (isRepeating) {
+      stopCycles();
+      return;
+    }
+
+    history.addToHistory(boardState);
   }
 
   void init() {
@@ -39,9 +53,8 @@ class BoardController {
   bool _isIndexOutOfRange(int x, int y) {
     if (x >= 0 && x < rows && y >= 0 && y < columns) {
       return false;
-    } else {
-      return true;
     }
+    return true;
   }
 
   int _aliveNeighbors(Cell cell) {
@@ -81,9 +94,9 @@ class BoardController {
 
   void _updateBoard() {
     _makeAllCells((cell) {
-      if (newBoardState[cell.row][cell.col] && !cell.isAlive) {
+      if (boardState[cell.row][cell.col] && !cell.isAlive) {
         cell.live();
-      } else if (!newBoardState[cell.row][cell.col] && cell.isAlive) {
+      } else if (!boardState[cell.row][cell.col] && cell.isAlive) {
         cell.die();
       }
     });
@@ -92,8 +105,8 @@ class BoardController {
   void _manageCellState(Cell cell) {
     int neighborsAlive = _aliveNeighbors(cell);
 
-    newBoardState[cell.row][cell.col] =
-        _manageBackupState(neighborsAlive) ?? newBoardState[cell.row][cell.col];
+    boardState[cell.row][cell.col] =
+        _manageBackupState(neighborsAlive) ?? boardState[cell.row][cell.col];
   }
 
   void runCycle() {
@@ -103,15 +116,13 @@ class BoardController {
   }
 
   void runCycles() {
-    _timer = Timer.periodic(Duration(milliseconds: 100), (timer) {
+    _timer = Timer.periodic(Duration(milliseconds: 100), (_) {
       runCycle();
     });
   }
 
   void stopCycles() {
-    if (_timer.isActive) {
-      _timer.cancel();
-    }
+    _timer.cancel();
   }
 
   void clearBoard() {
@@ -134,15 +145,27 @@ class BoardController {
 
   void randomize() {
     _makeAllCells("randomize");
-    _createStateBackup();
+    // _createStateBackup();
   }
 
   void undo() {
-    final previousBoardState = history.pop();
+    var previousboardState = history.pop();
+    bool isRepeated = true;
+
+    for (int x = 0; x < rows; x++) {
+      for (int y = 0; y < columns; y++) {
+        if (previousboardState[x][y] != boardState[x][y]) {
+          isRepeated = false;
+        }
+      }
+      if (!isRepeated) break;
+    }
+
+    if (isRepeated) previousboardState = history.pop();
 
     _makeAllCells((Cell cell) {
       boardData[cell.row][cell.col].state.value =
-          previousBoardState[cell.row][cell.col];
+          previousboardState[cell.row][cell.col];
     });
   }
 }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:game_of_life/cell/cell.dart';
-import 'package:game_of_life/core/app_colors.dart';
 
 class CellWidget extends StatefulWidget {
   final Cell cell;
