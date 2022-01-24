@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'package:flutter/cupertino.dart';
 import 'package:game_of_life/board/utils/history_manager.dart';
 import 'package:game_of_life/cell/cell.dart';
 
@@ -8,6 +8,10 @@ class BoardController {
   final int columns;
   final history = HistoryManager(maxUndos: 50);
   Timer _timer = Timer(Duration.zero, () {});
+
+  var timerStateNotifier = ValueNotifier<bool>(false);
+
+  bool get timerIsActive => timerStateNotifier.value;
 
   BoardController(this.rows, this.columns);
 
@@ -125,15 +129,20 @@ class BoardController {
 
   void runCycles() {
     if (boardIsEmpty) return;
-    if (_timer.isActive) return;
+    if (timerIsActive) {
+      stopCycles();
+      return;
+    }
 
     _timer = Timer.periodic(Duration(milliseconds: 100), (_) {
       runCycle();
     });
+    timerStateNotifier.value = true;
   }
 
   void stopCycles() {
     _timer.cancel();
+    timerStateNotifier.value = false;
   }
 
   void clearBoard() {

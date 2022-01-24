@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:game_of_life/board/board_controller.dart';
 import 'package:game_of_life/shared/default_button_widget.dart';
@@ -34,11 +36,13 @@ class ButtonPadWidget extends StatelessWidget {
                 size: iconSize,
               ),
             ),
-            DefaultButtonWidget(
-              onTap: controller.runCycles,
-              child: Icon(
-                Icons.play_arrow_rounded,
-                size: iconSize,
+            ValueListenableBuilder(
+              valueListenable: controller.timerStateNotifier,
+              builder: (context, bool value, _) => DefaultButtonWidget(
+                onTap: controller.runCycles,
+                child: value
+                    ? Icon(Icons.pause, size: iconSize)
+                    : Icon(Icons.play_arrow_rounded, size: iconSize),
               ),
             ),
             DefaultButtonWidget(
