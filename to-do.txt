@@ -1,0 +1,3 @@
+hold to shot
+customizable board size
+responsive cell size
